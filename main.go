@@ -22,6 +22,8 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 		homeHandler(w, r)
 	case "/contact":
 		contactHandler(w, r)
+	case "/bazinga":
+		http.Error(w, "Bazinga!", http.StatusNotFound)
 	default:
 		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 		w.WriteHeader(http.StatusNotFound)
