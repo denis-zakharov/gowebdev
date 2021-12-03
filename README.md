@@ -23,3 +23,30 @@ Serialize data into a JSON stream directly to a Writer object.
 e := json.NewEncoder(w)
 e.Encode(products)
 ```
+
+# gorilla mux
+
+A convenient wrapper to the net/http server with routing and middleware support.
+
+https://github.com/gorilla/mux
+
+# struct validator
+
+Validation of struct fields with additional annotations: required, conditions, custom
+validating functions.
+
+https://github.com/go-playground/validator
+
+# Swagger/OpenAPI
+
+## documentation
+Install `go install github.com/go-swagger/go-swagger/cmd/swagger@latest`
+
+Then you can generate the Swagger documentation:
+```
+swagger generate spec -o ./swagger.yaml --scan-models
+```
+
+The documentation should be available at the `/swagger.yaml` or `/docs` paths.
+
+## client autogeneration
