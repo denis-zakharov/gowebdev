@@ -37,21 +37,7 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 type Router struct{}
 
 func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		homeHandler(w, r)
-	case "/contact":
-		contactHandler(w, r)
-	case "/bazinga":
-		http.Error(w, "Bazinga!", http.StatusNotFound)
-	default:
-		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
-		w.WriteHeader(http.StatusNotFound)
-		msg := http.StatusText(http.StatusNotFound)
-		fmt.Fprintf(w,
-			"%s<p>Path: %s</p><p>Raw (encoded) path:%s</p>",
-			msg, r.URL.Path, r.URL.RawPath)
-	}
+	pathHandler(w, r)
 }
 
 func main() {
