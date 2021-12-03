@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"strconv"
@@ -28,12 +29,7 @@ func (psh *Products) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 func (psh *Products) AddProduct(w http.ResponseWriter, r *http.Request) {
 	psh.l.Println("Handle POST Products")
-	p := &data.Product{}
-	err := p.FromJSON(r.Body)
-	if err != nil {
-		http.Error(w, "Unable to unmarshall json", http.StatusBadRequest)
-		return
-	}
+	p := r.Context().Value(KeyProduct{}).(*data.Product)
 	// store
 	psh.l.Printf("Product: %#v", p)
 	data.AddProduct(p)
@@ -49,12 +45,7 @@ func (psh *Products) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := &data.Product{}
-	err = p.FromJSON(r.Body)
-	if err != nil {
-		http.Error(w, "Unable to unmarshall json", http.StatusBadRequest)
-		return
-	}
+	p := r.Context().Value(KeyProduct{}).(*data.Product)
 
 	// update
 	psh.l.Printf("Updating a Product: %#v", p)
@@ -67,4 +58,24 @@ func (psh *Products) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Product update failed", http.StatusInternalServerError)
 		return
 	}
+}
+
+type KeyProduct struct{}
+
+func (psh *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		p := &data.Product{}
+		err := p.FromJSON(r.Body)
+		if err != nil {
+			psh.l.Println("[ERROR] desirializing product", err)
+			http.Error(w, "Error reading product", http.StatusBadRequest)
+			return
+		}
+
+		// add the product to the context
+		ctx := context.WithValue(r.Context(), KeyProduct{}, p)
+		req := r.WithContext(ctx)
+
+		next.ServeHTTP(w, req)
+	})
 }
