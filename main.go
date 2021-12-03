@@ -34,16 +34,9 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type Router struct{}
-
-func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	pathHandler(w, r)
-}
-
 func main() {
-	var router Router
 	fmt.Println("Starting the web server on 3000...")
-	err := http.ListenAndServe(":3000", router)
+	err := http.ListenAndServe(":3000", http.HandlerFunc(pathHandler))
 	if err != nil {
 		panic(err)
 	}
