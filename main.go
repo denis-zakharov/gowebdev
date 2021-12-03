@@ -15,7 +15,7 @@ func main() {
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 
 	sm := http.NewServeMux()
-	sm.Handle("/", handlers.NewHello(l))
+	sm.Handle("/", handlers.NewProduct(l))
 	sm.Handle("/goodbye", handlers.NewGoodbye(l))
 
 	srv := &http.Server{

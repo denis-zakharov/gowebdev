@@ -7,7 +7,7 @@ import (
 )
 
 type Goodbye struct {
-	logger *log.Logger
+	l *log.Logger
 }
 
 func NewGoodbye(l *log.Logger) *Goodbye {
@@ -15,6 +15,6 @@ func NewGoodbye(l *log.Logger) *Goodbye {
 }
 
 func (g *Goodbye) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	g.logger.Println("Goodbye World!")
+	g.l.Println("Goodbye World!")
 	fmt.Fprint(w, "Bye!")
 }
