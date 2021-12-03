@@ -26,6 +26,9 @@ func main() {
 	putRouter.Use(ph.MiddlewareProductValidation)
 	putRouter.HandleFunc("/{id:[0-9]+}", ph.UpdateProduct)
 
+	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/{id:[0-9]+}", ph.DeleteProduct)
+
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.Use(ph.MiddlewareProductValidation)
 	postRouter.HandleFunc("/", ph.AddProduct)
