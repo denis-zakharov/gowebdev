@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -69,6 +70,14 @@ func (psh *Products) MiddlewareProductValidation(next http.Handler) http.Handler
 		if err != nil {
 			psh.l.Println("[ERROR] desirializing product", err)
 			http.Error(w, "Error reading product", http.StatusBadRequest)
+			return
+		}
+
+		// validate the product
+		err = p.Validate()
+		if err != nil {
+			psh.l.Println("[ERROR] validating product", err)
+			http.Error(w, fmt.Sprintf("Error validating product: %s", err), http.StatusBadRequest)
 			return
 		}
 
