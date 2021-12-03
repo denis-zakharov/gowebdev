@@ -19,9 +19,14 @@ type Product struct {
 
 type Products []*Product
 
-func (p *Products) ToJSON(w io.Writer) error {
+func (ps *Products) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
-	return e.Encode(p)
+	return e.Encode(ps)
+}
+
+func (p *Product) FromJSON(r io.Reader) error {
+	d := json.NewDecoder(r)
+	return d.Decode(p)
 }
 
 func GetProducts() Products {

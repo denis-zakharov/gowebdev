@@ -22,8 +22,9 @@ func main() {
 	srv := &http.Server{
 		Addr:         ":3000",
 		Handler:      sm,
+		ErrorLog:     l,
 		IdleTimeout:  120 * time.Second,
-		ReadTimeout:  1 * time.Second,
+		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 1 * time.Second,
 	}
 
