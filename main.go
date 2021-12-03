@@ -9,15 +9,24 @@ import (
 	"time"
 
 	"github.com/denis-zakharov/gowebdev/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
 
-	sm := http.NewServeMux()
-	sm.Handle("/", handlers.NewProducts(l))
-	sm.Handle("/hello", handlers.NewHello(l))
-	sm.Handle("/goodbye", handlers.NewGoodbye(l))
+	ph := handlers.NewProducts(l)
+
+	sm := mux.NewRouter()
+
+	getRouter := sm.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/", ph.GetProducts)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", ph.UpdateProduct)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", ph.AddProduct)
 
 	srv := &http.Server{
 		Addr:         ":3000",
