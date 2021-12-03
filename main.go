@@ -1,43 +1,48 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
+
+	"github.com/denis-zakharov/gowebdev/handlers"
 )
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	fmt.Fprintf(w, "<h1>Welcome to my great site!</h1>")
-}
-
-func contactHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	fmt.Fprint(w, "<h1>Contact Page</h1><p>To get in touch email me at "+
-		"<a href=\"mailto:dizaharov@gmail.com\">dizaharov@gmail.com</a>")
-}
-
-func pathHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		homeHandler(w, r)
-	case "/contact":
-		contactHandler(w, r)
-	case "/bazinga":
-		http.Error(w, "Bazinga!", http.StatusNotFound)
-	default:
-		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
-		w.WriteHeader(http.StatusNotFound)
-		msg := http.StatusText(http.StatusNotFound)
-		fmt.Fprintf(w,
-			"%s<p>Path: %s</p><p>Raw (encoded) path:%s</p>",
-			msg, r.URL.Path, r.URL.RawPath)
-	}
-}
-
 func main() {
-	fmt.Println("Starting the web server on 3000...")
-	err := http.ListenAndServe(":3000", http.HandlerFunc(pathHandler))
-	if err != nil {
-		panic(err)
+	l := log.New(os.Stdout, "product-api ", log.LstdFlags)
+
+	sm := http.NewServeMux()
+	sm.Handle("/", handlers.NewHello(l))
+	sm.Handle("/goodbye", handlers.NewGoodbye(l))
+
+	srv := &http.Server{
+		Addr:         ":3000",
+		Handler:      sm,
+		IdleTimeout:  120 * time.Second,
+		ReadTimeout:  1 * time.Second,
+		WriteTimeout: 1 * time.Second,
 	}
+
+	l.Println("Starting the web server on :3000...")
+	go func() {
+		err := srv.ListenAndServe()
+		if err != nil {
+			l.Fatal(err)
+		}
+	}()
+
+	// trap sigterm or interupt and gracefully shutdown the server
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	// Block until a signal is received.
+	sig := <-c
+	l.Println("Got signal:", sig)
+
+	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	srv.Shutdown(ctx)
 }
