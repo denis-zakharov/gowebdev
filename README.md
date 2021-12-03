@@ -8,3 +8,18 @@ Also implements `http.Handler`.
 
 `http.HandleFunc("/path", pathHandler)` is a wrapper to convert the function type to
 the `Handler` type.
+
+
+# encoding json
+
+Serialize data into a JSON string all at once.
+```
+d, err := json.Marshal(products) // deserialization in one chunk into memory
+w.Write(d)
+```
+
+Serialize data into a JSON stream directly to a Writer object.
+```
+e := json.NewEncoder(w)
+e.Encode(products)
+```

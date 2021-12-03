@@ -16,6 +16,7 @@ func main() {
 
 	sm := http.NewServeMux()
 	sm.Handle("/", handlers.NewProduct(l))
+	sm.Handle("/hello", handlers.NewHello(l))
 	sm.Handle("/goodbye", handlers.NewGoodbye(l))
 
 	srv := &http.Server{
