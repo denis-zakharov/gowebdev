@@ -34,10 +34,30 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type Router struct{}
+
+func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.URL.Path {
+	case "/":
+		homeHandler(w, r)
+	case "/contact":
+		contactHandler(w, r)
+	case "/bazinga":
+		http.Error(w, "Bazinga!", http.StatusNotFound)
+	default:
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+		w.WriteHeader(http.StatusNotFound)
+		msg := http.StatusText(http.StatusNotFound)
+		fmt.Fprintf(w,
+			"%s<p>Path: %s</p><p>Raw (encoded) path:%s</p>",
+			msg, r.URL.Path, r.URL.RawPath)
+	}
+}
+
 func main() {
-	http.HandleFunc("/", pathHandler)
+	var router Router
 	fmt.Println("Starting the web server on 3000...")
-	err := http.ListenAndServe(":3000", nil)
+	err := http.ListenAndServe(":3000", router)
 	if err != nil {
 		panic(err)
 	}
