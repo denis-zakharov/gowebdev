@@ -27,9 +27,10 @@ func pathHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 		w.WriteHeader(http.StatusNotFound)
+		msg := http.StatusText(http.StatusNotFound)
 		fmt.Fprintf(w,
-			"<h1>Not found</h1><p>Path: %s</p><p>Raw (encoded) path:%s</p>",
-			r.URL.Path, r.URL.RawPath)
+			"%s<p>Path: %s</p><p>Raw (encoded) path:%s</p>",
+			msg, r.URL.Path, r.URL.RawPath)
 	}
 }
 
