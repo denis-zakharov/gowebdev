@@ -24,19 +24,20 @@ func main() {
 
 	// create a new serve mux and register the handlers
 	sm := mux.NewRouter()
+	sm.Use(handlers.JsonContentTypeMiddleware)
 
 	// handlers for API
 	getR := sm.Methods(http.MethodGet).Subrouter()
 	getR.HandleFunc("/products", ph.ListAll)
 	getR.HandleFunc("/products/{id:[0-9]+}", ph.ListSingle)
 
-	putR := sm.Methods(http.MethodPut).Subrouter()
-	putR.HandleFunc("/products", ph.Update)
-	putR.Use(ph.MiddlewareValidateProduct)
-
 	postR := sm.Methods(http.MethodPost).Subrouter()
 	postR.HandleFunc("/products", ph.Create)
 	postR.Use(ph.MiddlewareValidateProduct)
+
+	putR := sm.Methods(http.MethodPut).Subrouter()
+	putR.HandleFunc("/products", ph.Update)
+	putR.Use(ph.MiddlewareValidateProduct)
 
 	deleteR := sm.Methods(http.MethodDelete).Subrouter()
 	deleteR.HandleFunc("/products/{id:[0-9]+}", ph.Delete)
