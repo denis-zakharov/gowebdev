@@ -1,3 +1,5 @@
+Original code: https://github.com/nicholasjackson/building-microservices-youtube/
+
 # http package
 
 - `http.Handler` is an interface with the `ServeHTTP` method.
