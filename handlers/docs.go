@@ -23,6 +23,7 @@ import "github.com/denis-zakharov/gowebdev/data"
 
 // Generic error message returned as a string
 // swagger:response errorResponse
+//lint:ignore U1000 swagger response model
 type errorResponseWrapper struct {
 	// Description of the error
 	// in: body
@@ -31,6 +32,7 @@ type errorResponseWrapper struct {
 
 // Validation errors defined as an array of strings
 // swagger:response errorValidation
+//lint:ignore U1000 swagger response model
 type errorValidationWrapper struct {
 	// Collection of the errors
 	// in: body
@@ -39,6 +41,7 @@ type errorValidationWrapper struct {
 
 // A list of products
 // swagger:response productsResponse
+//lint:ignore U1000 swagger response model
 type productsResponseWrapper struct {
 	// All current products
 	// in: body
@@ -47,6 +50,7 @@ type productsResponseWrapper struct {
 
 // Data structure representing a single product
 // swagger:response productResponse
+//lint:ignore U1000 swagger response model
 type productResponseWrapper struct {
 	// Newly created product
 	// in: body
@@ -55,10 +59,12 @@ type productResponseWrapper struct {
 
 // No content is returned by this API endpoint
 // swagger:response noContentResponse
+//lint:ignore U1000 swagger response model
 type noContentResponseWrapper struct {
 }
 
 // swagger:parameters updateProduct createProduct
+//lint:ignore U1000 swagger response model
 type productParamsWrapper struct {
 	// Product data structure to Update or Create.
 	// Note: the id field is ignored by update and create operations
@@ -68,6 +74,7 @@ type productParamsWrapper struct {
 }
 
 // swagger:parameters updateProduct
+//lint:ignore U1000 swagger response model
 type productIDParamsWrapper struct {
 	// The id of the product for which the operation relates
 	// in: path
