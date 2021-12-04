@@ -12,6 +12,7 @@ import (
 
 	"github.com/denis-zakharov/gowebdev/data"
 	"github.com/denis-zakharov/gowebdev/handlers"
+	gorillah "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -49,10 +50,13 @@ func main() {
 	getR.Handle("/docs", sh)
 	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
+	// CORS
+	ch := gorillah.CORS(gorillah.AllowedOrigins([]string{"http://localhost:3000"}))
+
 	// create a new server
 	s := http.Server{
-		Addr:         ":3000",           // configure the bind address
-		Handler:      sm,                // set the default handler
+		Addr:         ":9090",           // configure the bind address
+		Handler:      ch(sm),            // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client
 		WriteTimeout: 10 * time.Second,  // max time to write response to the client
@@ -61,7 +65,7 @@ func main() {
 
 	// start the server
 	go func() {
-		l.Println("Starting server on port 3000")
+		l.Println("Starting server on port 9090")
 
 		err := s.ListenAndServe()
 		if err != nil {

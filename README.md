@@ -52,3 +52,14 @@ swagger generate spec -o ./swagger.yaml --scan-models
 The documentation should be available at the `/swagger.yaml` or `/docs` paths.
 
 ## client autogeneration
+
+https://github.com/denis-zakharov/goswagger-client/blob/master/README.md
+
+## Test API and CORS in a browser
+```
+npm i -g local-web-server
+ws --spa index.html -p 3000
+go run main.go
+```
+
+Open in a browser http://localhost:3000
